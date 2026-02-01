@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  image         String?
+  role          String    @default("STUDENT")
+  isActive      Boolean   @default(true)
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  coursesCreated Course[] @relation("CreatedCourses")
+  progress       UserProgress[]
+}
+
+model Course {
+  id               String   @id @default(cuid())
+  title            String
+  shortDescription String?
+  description      String?
+  videoUrl         String?
+  coverImage       String?
+  level            String   @default("BEGINNER")
+  status           String   @default("DRAFT")
+  
+  createdById      String
+  createdBy        User     @relation("CreatedCourses", fields: [createdById], references: [id])
+  
+  progress         UserProgress[]
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model UserProgress {
+  id           String   @id @default(cuid())
+  userId       String
+  courseId     String
+  playbackTime Float    @default(0)
+  isCompleted  Boolean  @default(false)
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, courseId])
+}
