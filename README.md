@@ -67,7 +67,7 @@ http://localhost:3000
 
 ## 📚 Documentación
 
-Consulta [DOCUMENTATION.md](./DOCUMENTATION.md) para documentación completa del sistema, incluyendo:
+Consulta [DOCUMENTACION.md](./DOCUMENTACION.md) para documentación completa del sistema, incluyendo:
 - Arquitectura del sistema
 - Roles y permisos
 - Modelos de base de datos
