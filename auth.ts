@@ -66,7 +66,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     console.log("❌ Database error during authorize:", error)
                     console.error("❌ Database error during authorize:", error)
                     if (error instanceof Error) {
-                        console.error("Error message:", error.message)
+                        console.log("Error message:", error.message)
                         console.error("Error stack:", error.stack)
                     }
                     return null
