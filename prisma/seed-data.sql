@@ -3,6 +3,9 @@
 -- Contraseña para todos los usuarios: password123
 -- Hash bcrypt de 'password123' con salt rounds 12
 
+-- Primero, eliminar datos existentes si los hay (opcional)
+-- TRUNCATE TABLE "UserProgress", "Course", "User" CASCADE;
+
 -- Insertar Super Admin
 INSERT INTO "User" (id, email, name, role, password, "isActive", "createdAt", "updatedAt")
 VALUES (
@@ -46,9 +49,9 @@ VALUES
   ('student_010', 'student10@lms.com', 'Student 10', 'STUDENT', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYIq.Ejwu.K', true, NOW(), NOW())
 ON CONFLICT (email) DO NOTHING;
 
--- Insertar Cursos
+-- Insertar Cursos (sin ON CONFLICT porque no hay constraint único en title)
 INSERT INTO "Course" (id, title, "shortDescription", description, level, status, "createdById", "createdAt", "updatedAt")
-VALUES 
+SELECT * FROM (VALUES 
   ('course_001', 'Intro to Programming', 'Learn Intro to Programming in this comprehensive course.', 'Full description for Intro to Programming. This course covers all the essentials and advanced topics needed to master the subject. Includes projects and quizzes.', 'BEGINNER', 'PUBLISHED', 'inst_001', NOW(), NOW()),
   ('course_002', 'Advanced React Patterns', 'Learn Advanced React Patterns in this comprehensive course.', 'Full description for Advanced React Patterns. This course covers all the essentials and advanced topics needed to master the subject. Includes projects and quizzes.', 'ADVANCED', 'PUBLISHED', 'inst_002', NOW(), NOW()),
   ('course_003', 'Next.js for Beginners', 'Learn Next.js for Beginners in this comprehensive course.', 'Full description for Next.js for Beginners. This course covers all the essentials and advanced topics needed to master the subject. Includes projects and quizzes.', 'BEGINNER', 'PUBLISHED', 'inst_003', NOW(), NOW()),
@@ -64,4 +67,7 @@ VALUES
   ('course_013', 'Agile Methodologies', 'Learn Agile Methodologies in this comprehensive course.', 'Full description for Agile Methodologies. This course covers all the essentials and advanced topics needed to master the subject. Includes projects and quizzes.', 'BEGINNER', 'ARCHIVED', 'inst_001', NOW(), NOW()),
   ('course_014', 'DevOps Pipelines', 'Learn DevOps Pipelines in this comprehensive course.', 'Full description for DevOps Pipelines. This course covers all the essentials and advanced topics needed to master the subject. Includes projects and quizzes.', 'INTERMEDIATE', 'PUBLISHED', 'inst_002', NOW(), NOW()),
   ('course_015', 'Mobile App Dev with React Native', 'Learn Mobile App Dev with React Native in this comprehensive course.', 'Full description for Mobile App Dev with React Native. This course covers all the essentials and advanced topics needed to master the subject. Includes projects and quizzes.', 'INTERMEDIATE', 'PUBLISHED', 'inst_003', NOW(), NOW())
-ON CONFLICT (title) DO NOTHING;
+) AS v(id, title, "shortDescription", description, level, status, "createdById", "createdAt", "updatedAt")
+WHERE NOT EXISTS (
+  SELECT 1 FROM "Course" WHERE "Course".id = v.id
+);
