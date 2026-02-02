@@ -33,6 +33,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     const user = await db.user.findUnique({ where: { email } })
 
                     if (!user) {
+                        console.log("❌ User not found in database:", email)
                         console.error("❌ User not found in database:", email)
                         return null
                     }
@@ -45,6 +46,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     })
 
                     if (!user.password) {
+                        console.log("❌ User has no password set")
                         console.error("❌ User has no password set")
                         return null
                     }
@@ -53,6 +55,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     const passwordsMatch = await bcrypt.compare(password, user.password)
 
                     if (!passwordsMatch) {
+                        console.log("❌ Password does not match")
                         console.error("❌ Password does not match")
                         return null
                     }
@@ -60,6 +63,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     console.log("✅ Password matches! Login successful")
                     return user
                 } catch (error) {
+                    console.log("❌ Database error during authorize:", error)
                     console.error("❌ Database error during authorize:", error)
                     if (error instanceof Error) {
                         console.error("Error message:", error.message)
