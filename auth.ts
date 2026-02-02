@@ -10,18 +10,62 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     providers: [
         Credentials({
             async authorize(credentials) {
+                console.log("🔑 Authorize called with credentials:", {
+                    email: credentials?.email,
+                    hasPassword: !!credentials?.password
+                })
+
                 const parsedCredentials = z
                     .object({ email: z.string().email(), password: z.string().min(6) })
                     .safeParse(credentials)
 
-                if (parsedCredentials.success) {
-                    const { email, password } = parsedCredentials.data
-                    const user = await db.user.findUnique({ where: { email } })
-                    if (!user || !user.password) return null
-                    const passwordsMatch = await bcrypt.compare(password, user.password)
-                    if (passwordsMatch) return user
+                if (!parsedCredentials.success) {
+                    console.error("❌ Invalid credentials format:", parsedCredentials.error.issues)
+                    return null
                 }
-                return null
+
+                const { email, password } = parsedCredentials.data
+                console.log("✅ Credentials validated for email:", email)
+
+                try {
+                    console.log("🔍 Searching for user in database...")
+                    const user = await db.user.findUnique({ where: { email } })
+
+                    if (!user) {
+                        console.error("❌ User not found in database:", email)
+                        return null
+                    }
+
+                    console.log("✅ User found:", {
+                        id: user.id,
+                        email: user.email,
+                        role: user.role,
+                        hasPassword: !!user.password
+                    })
+
+                    if (!user.password) {
+                        console.error("❌ User has no password set")
+                        return null
+                    }
+
+                    console.log("🔐 Comparing passwords...")
+                    const passwordsMatch = await bcrypt.compare(password, user.password)
+
+                    if (!passwordsMatch) {
+                        console.error("❌ Password does not match")
+                        return null
+                    }
+
+                    console.log("✅ Password matches! Login successful")
+                    return user
+                } catch (error) {
+                    console.error("❌ Database error during authorize:", error)
+                    if (error instanceof Error) {
+                        console.error("Error message:", error.message)
+                        console.error("Error stack:", error.stack)
+                    }
+                    return null
+                }
             },
         }),
     ],
