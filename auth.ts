@@ -33,6 +33,9 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     console.log("🔍 Searching for user in database...")
                     const user = await db.user.findUnique({ where: { email } })
 
+                    console.log("email:", email)
+                    console.log("User:", user)
+
                     if (!user) {
                         console.log("❌ User not found in database:", email)
                         console.error("❌ User not found in database:", email)
