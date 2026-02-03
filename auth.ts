@@ -52,11 +52,11 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     console.log("✅ User password:" + user.password)
                     console.log("this password:" + password)
 
-                    if (!user.password) {
-                        console.log("❌ User has no password set")
-                        console.error("❌ User has no password set")
-                        return null
-                    }
+                    //if (!user.password) {
+                    //    console.log("❌ User has no password set")
+                    //    console.error("❌ User has no password set")
+                    //    return null
+                    //}
 
                     console.log("🔐 Comparing passwords...")
                     console.log("Password from input:", password)
