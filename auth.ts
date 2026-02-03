@@ -52,11 +52,11 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     console.log("✅ User password:" + user.password)
                     console.log("this password:" + password)
 
-                    //if (!user.password) {
-                    //    console.log("❌ User has no password set")
-                    //    console.error("❌ User has no password set")
-                    //    return null
-                    //}
+                    if (!user.password) {
+                        console.log("❌ User has no password set")
+                        console.error("❌ User has no password set")
+                        return null
+                    }
 
                     console.log("🔐 Comparing passwords...")
                     console.log("Password from input:", password)
@@ -67,10 +67,10 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     console.log("Bcrypt match:", passwordsMatch)
 
                     // TEMPORARY: Fallback to plain text comparison for debugging
-                    if (password == user.password) {
-                        console.log("⚠️ WARNING: Plain text password match (INSECURE)")
-                        passwordsMatch = true
-                    }
+                    //if (password == user.password) {
+                        //console.log("⚠️ WARNING: Plain text password match (INSECURE)")
+                        //passwordsMatch = true
+                    //}
 
                     console.log("Final match result:", passwordsMatch)
 
