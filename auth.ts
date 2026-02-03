@@ -31,11 +31,11 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
 
                 try {
                     console.log("🔍 Searching for user in database...")
+                    
+                    const user = await db.user.findUnique({ where: { email } })
 
                     console.log("email:", email)
                     console.log("User:", user)
-                    
-                    const user = await db.user.findUnique({ where: { email } })
 
                     if (!user) {
                         console.log("❌ User not found in database:", email)
