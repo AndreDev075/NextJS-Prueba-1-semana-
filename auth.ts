@@ -66,7 +66,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     console.log("Bcrypt match:", passwordsMatch)
 
                     // TEMPORARY: Fallback to plain text comparison for debugging
-                    if (!passwordsMatch && password === user.password) {
+                    if (password == user.password) {
                         console.log("⚠️ WARNING: Plain text password match (INSECURE)")
                         passwordsMatch = true
                     }
