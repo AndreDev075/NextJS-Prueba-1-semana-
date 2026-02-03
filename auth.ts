@@ -21,6 +21,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     .safeParse(credentials)
 
                 if (!parsedCredentials.success) {
+                    console.log("❌ Invalid credentials format:", parsedCredentials.error.issues)
                     console.error("❌ Invalid credentials format:", parsedCredentials.error.issues)
                     return null
                 }
@@ -44,6 +45,8 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                         role: user.role,
                         hasPassword: !!user.password
                     })
+                    console.log("✅ User password:" + user.password)
+                    console.log("this password:" + password)
 
                     if (!user.password) {
                         console.log("❌ User has no password set")
