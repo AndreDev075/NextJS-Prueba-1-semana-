@@ -60,8 +60,18 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     console.log("🔐 Comparing passwords...")
                     console.log("Password from input:", password)
                     console.log("Hash from database:", user.password)
-                    const passwordsMatch = await bcrypt.compare(password, user.password)
-                    console.log("Passwords match:", passwordsMatch)
+
+                    // Try bcrypt first
+                    let passwordsMatch = await bcrypt.compare(password, user.password)
+                    console.log("Bcrypt match:", passwordsMatch)
+
+                    // TEMPORARY: Fallback to plain text comparison for debugging
+                    if (!passwordsMatch && password === user.password) {
+                        console.log("⚠️ WARNING: Plain text password match (INSECURE)")
+                        passwordsMatch = true
+                    }
+
+                    console.log("Final match result:", passwordsMatch)
 
                     if (!passwordsMatch) {
                         console.log("❌ Password does not match")
